@@ -38,11 +38,40 @@ export function extractMonsterNames(monsters) {
  * @return {Object} - Object with lowThreat, mediumThreat, and highThreat arrays
  */
 export function organizeByThreatLevel(monsters) {
-  // TODO: Transform the data structure to organize monsters by threat level
+  // Transform the data structure to organize monsters by threat level
   // instead of difficulty
-  // lowThreat: < 10,000
-  // mediumThreat: between 10,000 and 50,000
-  // highThreat: > 50,000
+
+  // Define threat level categories
+  const threatLevels = {
+    lowThreat: [],
+    mediumThreat: [],
+    highThreat: [],
+  }
+
+  // Flatten all monsters into a single array with calculated threat levels
+  const allMonsters = Object.entries(monsters)
+    .filter(([category, monsterArray]) => Array.isArray(monsterArray))
+    .flatMap(([category, monsterArray]) =>
+      monsterArray.map((monster) => ({
+        ...monster,
+        category,
+        threatLevel: monster.health * monster.damage,
+      })),
+    )
+
+  // Organize monsters into threat level categories
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  allMonsters.forEach((monster) => {
+    if (monster.threatLevel < 10000) {
+      threatLevels.lowThreat.push(monster)
+    } else if (monster.threatLevel >= 10000 && monster.threatLevel <= 50000) {
+      threatLevels.mediumThreat.push(monster)
+    } else {
+      threatLevels.highThreat.push(monster)
+    }
+  })
+
+  return threatLevels
 }
 
 export function sum(a, b) {
