@@ -6,8 +6,18 @@ import data from './data.js'
  * @return {Array} - Array of objects with name and threatLevel properties
  */
 export function calculateThreatLevels(monsters) {
-  // TODO: Calculate the threat level (health × damage) for each monster
+  // Calculate the threat level (health x damage) for each monster
   // and return an array of monsters with their threat levels
+
+  return Object.entries(monsters)
+    .filter(([difficulty, monsterArray]) => Array.isArray(monsterArray))
+    .flatMap(([difficulty, monsterArray]) =>
+      monsterArray.map((monster) => ({
+        ...monster,
+        difficulty,
+        threatLevel: monster.health * monster.damage,
+      })),
+    )
 }
 
 /**
